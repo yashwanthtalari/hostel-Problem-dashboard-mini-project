@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hostel Issue Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f5;
+            padding: 40px;
+        }
+
+        .container {
+            background: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Report Hostel Issue</h2>
+
+        <p><b>Name:</b> <span id="studentName"></span></p>
+        <p><b>Room:</b> <span id="roomNumber"></span></p>
+
+        <select id="category">
+            <option>Electrical</option>
+            <option>Plumbing</option>
+            <option>Cleaning</option>
+            <option>Internet</option>
+        </select>
+
+        <textarea id="desc" placeholder="Describe the issue"></textarea>
+
+        <button onclick="submitIssue()">Submit Issue</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const nameSpan = document.getElementById("studentName");
+            const roomSpan = document.getElementById("roomNumber");
+
+            if (!nameSpan || !roomSpan) {
+                console.error("Required elements not found in HTML");
+                return;
+            }
+
+            const studentName = localStorage.getItem("studentName");
+            const roomNumber = localStorage.getItem("roomNumber");
+
+            if (!studentName || !roomNumber) {
+                window.location.href = "/";
+                return;
+            }
+
+            nameSpan.innerText = studentName;
+            roomSpan.innerText = roomNumber;
+
+            window.submitIssue = function () {
+                const category = document.getElementById("category").value;
+                const description = document.getElementById("desc").value;
+
+                if (!description) {
+                    alert("Please describe the issue");
+                    return;
+                }
+
+                fetch("http://127.0.0.1:8000/submit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        student_name: studentName,
+                        room_number: roomNumber,
+                        category: category,
+                        description: description
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById("result").innerText =
+                            "Issue submitted successfully! Issue ID: " + data.issue_id;
+                        document.getElementById("desc").value = "";
+                    });
+            };
+
+        });
+    </script>
+
+</body>
+
+</html>
