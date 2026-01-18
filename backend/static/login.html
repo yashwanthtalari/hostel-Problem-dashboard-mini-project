@@ -1,73 +1,15 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <title>Login | Hostel Issue Portal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            width: 300px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        input,
-        button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
+<head><title>Login</title></head>
 <body>
+  <h2>Login</h2>
 
-    <div class="card">
-        <h2>Student Sign In</h2>
-        <input id="name" placeholder="Student Name">
-        <input id="room" placeholder="Room Number">
-        <button onclick="login()">Sign In</button>
-    </div>
+  <form action="/login" method="post">
 
-    <script>
-        // If already logged in, skip login page
-        if (localStorage.getItem("studentName") && localStorage.getItem("roomNumber")) {
-            window.location.href = "/static/index.html";
-        }
-
-        function login() {
-            const studentName = document.getElementById("name").value;
-            const roomNumber = document.getElementById("room").value;
-
-            if (!studentName || !roomNumber) {
-                alert("Please enter name and room number");
-                return;
-            }
-
-            localStorage.setItem("studentName", studentName);
-            localStorage.setItem("roomNumber", roomNumber);
-
-            window.location.href = "/static/index.html";
-        }
-    </script>
+    <input name="username" placeholder="Username" required><br><br>
+    <input name="password" type="password" placeholder="Password" required><br><br>
+    <button type="submit">Login</button>
+  </form>
 
 </body>
-
 </html>

@@ -1,4 +1,9 @@
+# fastapi
+# uvicorn
+# sqlalchemy
+# pydantic
 fastapi
 uvicorn
 sqlalchemy
-pydantic
+python-multipart
+itsdangerous

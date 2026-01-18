@@ -1,116 +1,54 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <title>Hostel Issue Portal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #eef2f5;
-            padding: 40px;
-        }
-
-        .container {
-            background: white;
-            max-width: 500px;
-            margin: auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        input,
-        select,
-        textarea,
-        button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        button {
-            background: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
+<head><title>Dashboard</title></head>
 <body>
 
-    <div class="container">
-        <h2>Report Hostel Issue</h2>
+<h2>Submit Hostel Issue</h2>
 
-        <p><b>Name:</b> <span id="studentName"></span></p>
-        <p><b>Room:</b> <span id="roomNumber"></span></p>
+<form id="issueForm">
+  <input placeholder="Name" id="name" required><br><br>
+  <input placeholder="Room" id="room" required><br><br>
+  <input placeholder="Category" id="category" required><br><br>
+  <textarea placeholder="Description" id="desc"></textarea><br><br>
+  <button type="submit">Submit</button>
+</form>
 
-        <select id="category">
-            <option>Electrical</option>
-            <option>Plumbing</option>
-            <option>Cleaning</option>
-            <option>Internet</option>
-        </select>
+<p id="result" style="font-weight:bold;"></p>
 
-        <textarea id="desc" placeholder="Describe the issue"></textarea>
+<br>
+<a href="/track">Go to Track Page</a> |
+<a href="/logout">Logout</a>
 
-        <button onclick="submitIssue()">Submit Issue</button>
+<script>
+document.getElementById("issueForm").addEventListener("submit", async function(e){
+  e.preventDefault();
 
-        <p id="result"></p>
-    </div>
+  const res = await fetch("/submit", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      student_name: document.getElementById("name").value,
+      room_number: document.getElementById("room").value,
+      category: document.getElementById("category").value,
+      description: document.getElementById("desc").value
+    })
+  });
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
+  const data = await res.json();
 
-            const nameSpan = document.getElementById("studentName");
-            const roomSpan = document.getElementById("roomNumber");
+  if (!res.ok) {
+    alert(data.detail);
+    return;
+  }
 
-            if (!nameSpan || !roomSpan) {
-                console.error("Required elements not found in HTML");
-                return;
-            }
+  // Clear form
+  document.getElementById("issueForm").reset();
 
-            const studentName = localStorage.getItem("studentName");
-            const roomNumber = localStorage.getItem("roomNumber");
-
-            if (!studentName || !roomNumber) {
-                window.location.href = "/";
-                return;
-            }
-
-            nameSpan.innerText = studentName;
-            roomSpan.innerText = roomNumber;
-
-            window.submitIssue = function () {
-                const category = document.getElementById("category").value;
-                const description = document.getElementById("desc").value;
-
-                if (!description) {
-                    alert("Please describe the issue");
-                    return;
-                }
-
-                fetch("http://127.0.0.1:8000/submit", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        student_name: studentName,
-                        room_number: roomNumber,
-                        category: category,
-                        description: description
-                    })
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        document.getElementById("result").innerText =
-                            "Issue submitted successfully! Issue ID: " + data.issue_id;
-                        document.getElementById("desc").value = "";
-                    });
-            };
-
-        });
-    </script>
+  // Show only Issue ID
+  document.getElementById("result").innerText =
+    "Your Issue ID is: " + data.issue_id;
+});
+</script>
 
 </body>
-
 </html>

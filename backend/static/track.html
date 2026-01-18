@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <title>Track Issue</title>
-</head>
-
+<head><title>Track Issue</title></head>
 <body>
-    <h2>Track Issue Status</h2>
 
-    <input id="issueId" placeholder="Enter Issue ID">
-    <button onclick="track()">Track</button>
+<h2>Track Issue</h2>
 
-    <pre id="output"></pre>
+<input id="issueId" placeholder="Enter Issue ID">
+<button onclick="track()">Track</button>
 
-    <script>
-        function track() {
-            fetch(`http://127.0.0.1:8000/track/${issueId.value}`)
-                .then(res => res.json())
-                .then(data => {
-                    output.innerText = JSON.stringify(data, null, 2);
-                });
-        }
-    </script>
+<pre id="result"></pre>
+
+<br>
+<a href="/index">Back to Dashboard</a>
+
+<script>
+async function track(){
+  const id = document.getElementById("issueId").value;
+  const res = await fetch(`/track/${id}`);
+  const data = await res.json();
+  document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+}
+</script>
+
 </body>
-
 </html>
